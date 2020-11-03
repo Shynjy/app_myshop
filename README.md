@@ -3,8 +3,8 @@
 # 📱 app_myshop
 
 ## :memo: Sobre o Projeto<br>
-### Português:<br>
-Um projeto fictício apenas para estudo de flutter, com foco em gerenciamento de estado.
+### Português:</br>
+Um projeto fictício apenas para estudo de flutter, com foco em gerenciamento de estado.</br>
 Um aplicativo de vendas.
 
 ### Inglês:<br>
