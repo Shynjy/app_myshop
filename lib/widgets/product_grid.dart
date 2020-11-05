@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 // Tipos
-import '../models/product.dart';
+// import '../providers/product.dart';
 
 // Widgets
 import '../widgets/product_item.dart';

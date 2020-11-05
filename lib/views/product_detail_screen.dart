@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // Tipos
-import '../models/product.dart';
+import '../providers/product.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   @override

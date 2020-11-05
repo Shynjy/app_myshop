@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // Tipo
-import '../models/product.dart';
+import './product.dart';
 
 // Dados
 import '../data/dummy_data.dart';
