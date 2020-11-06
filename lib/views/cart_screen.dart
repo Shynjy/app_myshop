@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 // Dados
 import '../providers/cart.dart';
+import '../providers/orders.dart';
 
 // Widget
 import '../widgets/cart_item_widget.dart';
@@ -45,9 +46,13 @@ class CartScreen extends StatelessWidget {
                   ),
                   Spacer(),
                   FlatButton(
-                    onPressed: () {},
                     child: const Text('COMPRAR'),
                     textColor: Theme.of(context).primaryColor,
+                    onPressed: () {
+                      Provider.of<Orders>(context, listen: false)
+                          .addOrder(cart);
+                      cart.clear();
+                    },
                   ),
                 ],
               ),
