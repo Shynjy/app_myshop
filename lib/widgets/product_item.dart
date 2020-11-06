@@ -24,7 +24,7 @@ class ProductItem extends StatelessWidget {
               arguments: product,
             );
           },
-          child: Image.network(
+          child: Image.asset(
             product.imageUrl,
             fit: BoxFit.cover,
           ),
