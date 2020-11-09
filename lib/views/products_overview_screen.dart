@@ -7,6 +7,7 @@ import '../utils/app_routes.dart';
 // Widgets
 import '../widgets/product_grid.dart';
 import '../widgets/badge.dart';
+import '../widgets/app_drawer.dart';
 
 // Dados
 import 'package:app_myshop/providers/cart.dart';
@@ -66,6 +67,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
           ),
         ],
       ),
+      drawer: AppDrawer(),
       body: ProductGrid(_showFavoriteOnly),
     );
   }
