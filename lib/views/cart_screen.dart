@@ -49,9 +49,11 @@ class CartScreen extends StatelessWidget {
                     child: const Text('COMPRAR'),
                     textColor: Theme.of(context).primaryColor,
                     onPressed: () {
+                      // Não permite a compra zerada
+                      if (cart.totalAmount <= 0.0) return;
                       Provider.of<Orders>(context, listen: false)
-                          .addOrder(cart);
-                      cart.clear();
+                          .addOrder(cart); // Adiciona 
+                      cart.clear(); // Limpa o carrinho
                     },
                   ),
                 ],
