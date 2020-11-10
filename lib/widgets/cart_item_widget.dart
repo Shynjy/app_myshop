@@ -14,7 +14,11 @@ class CartItemWidget extends StatelessWidget {
     return Dismissible(
       key: ValueKey(cartItem.id),
       background: Container(
-        color: Theme.of(context).errorColor,
+        decoration: ShapeDecoration(
+          color: Theme.of(context).errorColor,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        ),
         child: Icon(
           Icons.delete,
           color: Colors.white,
