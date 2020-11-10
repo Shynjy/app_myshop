@@ -8,7 +8,7 @@ import '../providers/cart.dart';
 // Rotas
 import '../utils/app_routes.dart';
 
-class ProductItem extends StatelessWidget {
+class ProductGridItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Product product = Provider.of<Product>(context, listen: false);

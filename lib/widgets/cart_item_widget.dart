@@ -23,18 +23,40 @@ class CartItemWidget extends StatelessWidget {
         alignment: Alignment.centerRight,
         padding: EdgeInsets.only(right: 20),
         margin: EdgeInsets.symmetric(
-          horizontal: 15,
           vertical: 4,
         ),
       ),
       direction:
           DismissDirection.endToStart, // Torna o dismissble apenas para um lado
+      confirmDismiss: (_) {
+        return showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('Exclusão de item'),
+            content: Text('Você deseja excluir um item?'),
+            actions: [
+              FlatButton(
+                child: Text('SIM'),
+                onPressed: () {
+                  Navigator.of(ctx).pop(true);
+                },
+              ),
+              FlatButton(
+                child: Text('NÃO'),
+                onPressed: () {
+                  Navigator.of(ctx).pop(false);
+                },
+              ),
+            ],
+          ),
+        );
+      },
       onDismissed: (_) {
-        Provider.of<Cart>(context, listen: false).removeItem(cartItem.productId);
+        Provider.of<Cart>(context, listen: false)
+            .removeItem(cartItem.productId);
       },
       child: Card(
         margin: EdgeInsets.symmetric(
-          horizontal: 15,
           vertical: 4,
         ),
         child: Padding(
@@ -49,7 +71,8 @@ class CartItemWidget extends StatelessWidget {
               ),
             ),
             title: Text(cartItem.title),
-            subtitle: Text('Total: R\$ ${(cartItem.price * cartItem.quantity).toStringAsFixed(2)}'),
+            subtitle: Text(
+                'Total: R\$ ${(cartItem.price * cartItem.quantity).toStringAsFixed(2)}'),
             trailing: Text('${cartItem.quantity}x'),
           ),
         ),

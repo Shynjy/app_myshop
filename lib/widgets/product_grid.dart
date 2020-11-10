@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 // import '../providers/product.dart';
 
 // Widgets
-import '../widgets/product_item.dart';
+import '../widgets/product_grid_item.dart';
 
 // Dados
 import '../providers/products.dart';
@@ -25,7 +25,7 @@ class ProductGrid extends StatelessWidget {
       itemCount: products.length, // Sempre passar a quantidade de itens
       itemBuilder: (ctx, index) => ChangeNotifierProvider.value(
         value: products[index],
-        child: ProductItem(),
+        child: ProductGridItem(),
       ),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2, // Quantidade de itens no Row
