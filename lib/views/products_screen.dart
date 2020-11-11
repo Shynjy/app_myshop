@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 // Widgets
 import '../widgets/app_drawer.dart';
+import '../widgets/product_item.dart';
 
 // Rotas
 import '../utils/app_routes.dart';
@@ -21,6 +22,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   @override
   Widget build(BuildContext context) {
     final products = Provider.of<Products>(context);
+    final productsItems = products.items;
     return WillPopScope(
       onWillPop: () async {
         if (_key.currentState.isDrawerOpen) {
@@ -37,8 +39,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.add),
-              onPressed: () {},
-            )
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamed(AppRoutes.PRODUCT_FORM);
+              },
+            ),
           ],
         ),
         drawer: AppDrawer(),
@@ -46,7 +51,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
           padding: EdgeInsets.all(8),
           child: ListView.builder(
             itemCount: products.itemsCount,
-            itemBuilder: (ctx, index) => Text('data'),
+            itemBuilder: (ctx, index) => Column(
+              children: <Widget>[
+                ProductItem(productsItems[index]),
+                Divider(thickness: 1),
+              ],
+            ),
           ),
         ),
       ),

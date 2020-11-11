@@ -7,6 +7,7 @@ import './views/product_detail_screen.dart';
 import './views/cart_screen.dart';
 import './views/orders_screen.dart';
 import './views/products_screen.dart';
+import './views/product_form_screen.dart';
 
 // Rotas
 import './utils/app_routes.dart';
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
           AppRoutes.CART: (ctx) => CartScreen(),
           AppRoutes.ORDERS: (ctx) => OrdersScreen(),
           AppRoutes.PRODUCTS: (ctx) => ProductsScreen(),
+          AppRoutes.PRODUCT_FORM: (ctx) => ProductFormScreen(),
         },
         onUnknownRoute: (settings) {
         return MaterialPageRoute(builder: (_) {
