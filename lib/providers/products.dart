@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 // Tipo
 import './product.dart';
@@ -23,16 +25,30 @@ class Products with ChangeNotifier {
   }
 
   void addProduct(Product newProduct) {
-    _items.add(
-      Product(
-        id: Random().nextDouble().toString(),
+    const urlProducts =
+        'https://flutter-myshop-cod3r.firebaseio.com/products.json';
+
+    http
+        .post(
+      urlProducts,
+      body: json.encode({
+        'title': newProduct.title,
+        'description': newProduct.description,
+        'price': newProduct.price,
+        'imageUrl': newProduct.imageUrl,
+        'isFavorite': newProduct.isFavorite,
+      }),
+    )
+        .then((response) {
+      _items.add(Product(
+        id: json.decode(response.body)['name'],
         title: newProduct.title,
         description: newProduct.description,
         price: newProduct.price,
         imageUrl: newProduct.imageUrl,
-      ),
-    );
-    notifyListeners();
+      ));
+      notifyListeners();
+    });
   }
 
   void updateProduct(Product product) {
