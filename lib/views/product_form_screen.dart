@@ -1,4 +1,4 @@
-import 'dart:html';
+// import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -51,6 +51,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
 
   void _updateImage() {
     if (isValidImageUrl(_imageUrlController.text)) {
+      // reconstrói a tela quando o valor é válido
       setState(() {});
     }
   }
@@ -66,7 +67,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
         (endsWithPng || endsWithJpg || endsWithJpeg);
   }
 
-  void _saveForm() {
+  Future<void> _saveForm() async {
     bool isValid = _form.currentState.validate();
     _form.currentState.save();
 
@@ -87,28 +88,31 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     });
 
     final products = Provider.of<Products>(context, listen: false);
-    if (_formData['id'] == null) {
-      products.addProduct(product).catchError((error) {
-        return showDialog<Null>(
-            context: context,
-            builder: (ctx) => AlertDialog(
-                  title: Text('Ocorreu um erro!'),
-                  content: Text('Infelizmente seu produto não pode ser cadastrado!!!'),
-                  actions: <Widget>[
-                    FlatButton(
-                        child: Text('OK'),
-                        onPressed: () => Navigator.of(context).pop()),
-                  ],
-                ));
-      }).then((_) {
-        setState(() {
-          _isLoading = false;
-        });
-        Navigator.of(context).pop();
-      });
-    } else {
-      products.updateProduct(product);
+
+    try {
+      if (_formData['id'] == null) {
+        await products.addProduct(product);
+      } else {
+        await products.updateProduct(product);
+      }
       Navigator.of(context).pop();
+    } catch (error) {
+      await showDialog<Null>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('Ocorreu um erro!'),
+                content:
+                    Text('Infelizmente seu produto não pode ser cadastrado!!!'),
+                actions: <Widget>[
+                  FlatButton(
+                      child: Text('OK'),
+                      onPressed: () => Navigator.of(context).pop()),
+                ],
+              ));
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app_myshop/exceptions/http_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -7,10 +8,13 @@ import 'package:http/http.dart' as http;
 import './product.dart';
 
 // Dados
-import '../data/dummy_data.dart';
+// import '../data/dummy_data.dart';
 
 class Products with ChangeNotifier {
-  List<Product> _items = DUMMY_PRODUCTS;
+  final String _urlProducts =
+      'https://flutter-myshop-cod3r.firebaseio.com/products';
+  // List<Product> _items = DUMMY_PRODUCTS;
+  List<Product> _items = [];
 
   // Retona um copia
   List<Product> get items => [..._items];
@@ -23,13 +27,32 @@ class Products with ChangeNotifier {
     return _items.where((prod) => prod.isFavorite).toList();
   }
 
-  Future<void> addProduct(Product newProduct) {
-    const urlProducts =
-        'https://flutter-myshop-cod3r.firebaseio.com/products.json';
+  Future<void> loadProducts() async {
+    final response = await http.get("$_urlProducts.json");
+    Map<String, dynamic> data = json.decode(response.body);
 
-    return http
-        .post(
-      urlProducts,
+    // Limpa a Lista
+    _items.clear();
+
+    if (data != null) {
+      data.forEach((productId, productData) {
+        _items.add(Product(
+          id: productId,
+          title: productData['title'],
+          description: productData['description'],
+          price: productData['price'],
+          imageUrl: productData['imageUrl'],
+          isFavorite: productData['isFavorite'],
+        ));
+      });
+      notifyListeners();
+    }
+    return Future.value();
+  }
+
+  Future<void> addProduct(Product newProduct) async {
+    final response = await http.post(
+      "$_urlProducts.json",
       body: json.encode({
         'title': newProduct.title,
         'description': newProduct.description,
@@ -37,20 +60,19 @@ class Products with ChangeNotifier {
         'imageUrl': newProduct.imageUrl,
         'isFavorite': newProduct.isFavorite,
       }),
-    )
-        .then((response) {
-      _items.add(Product(
-        id: json.decode(response.body)['name'],
-        title: newProduct.title,
-        description: newProduct.description,
-        price: newProduct.price,
-        imageUrl: newProduct.imageUrl,
-      ));
-      notifyListeners();
-    });
+    );
+
+    _items.add(Product(
+      id: json.decode(response.body)['name'],
+      title: newProduct.title,
+      description: newProduct.description,
+      price: newProduct.price,
+      imageUrl: newProduct.imageUrl,
+    ));
+    notifyListeners();
   }
 
-  void updateProduct(Product product) {
+  Future<void> updateProduct(Product product) async {
     if (product == null || product.id == null) {
       return;
     }
@@ -58,35 +80,34 @@ class Products with ChangeNotifier {
     final index = _items.indexWhere((prod) => prod.id == product.id);
 
     if (index >= 0) {
+      await http.patch(
+        "$_urlProducts/${product.id}.json",
+        body: json.encode({
+          'title': product.title,
+          'description': product.description,
+          'price': product.price,
+          'imageUrl': product.imageUrl,
+        }),
+      );
       _items[index] = product;
       notifyListeners();
     }
   }
 
-  void deleteProduct(String id) {
+  Future<void> deleteProduct(String id) async {
     final index = _items.indexWhere((prod) => prod.id == id);
     if (index >= 0) {
-      _items.removeWhere((product) => product.id == id);
+      final product = _items[index];
+      _items.remove(product);
       notifyListeners();
+
+      final response = await http.delete("$_urlProducts/${product.id}.json");
+
+      if (response.statusCode >= 400) {
+        _items.insert(index, product);
+        notifyListeners();
+        throw HttpException('Ocorreu um erro na exclusão do produto.');
+      }
     }
   }
-
-  // bool _showFavoriteOnly = false;
-
-  // List<Product> get items {
-  //   if (_showFavoriteOnly) {
-  //     return _items.where((prod) => prod.isFavorite).toList();
-  //   }
-  //   return [..._items];
-  // }
-
-  // void showFavoriteOnly() {
-  //   _showFavoriteOnly = true;
-  //   notifyListeners();
-  // }
-
-  // void showAll() {
-  //   _showFavoriteOnly = false;
-  //   notifyListeners();
-  // }
 }
