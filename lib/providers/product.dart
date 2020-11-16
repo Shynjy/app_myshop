@@ -4,9 +4,11 @@ import 'package:flutter/foundation.dart';
 
 import 'package:http/http.dart' as http;
 
+// Rotas
+import '../utils/constants.dart';
+
 class Product with ChangeNotifier {
-  final String _urlProducts =
-      'https://flutter-myshop-cod3r.firebaseio.com/products';
+  final String _urlProducts = '${Constants.BASE_API_URL}/products';
 
   final String id;
   final String title;

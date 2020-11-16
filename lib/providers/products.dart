@@ -7,13 +7,13 @@ import 'package:http/http.dart' as http;
 // Tipo
 import './product.dart';
 
-// Dados
-// import '../data/dummy_data.dart';
+// Rotas
+import '../utils/constants.dart';
 
 class Products with ChangeNotifier {
   final String _urlProducts =
-      'https://flutter-myshop-cod3r.firebaseio.com/products';
-  // List<Product> _items = DUMMY_PRODUCTS;
+      '${Constants.BASE_API_URL}/products';
+      
   List<Product> _items = [];
 
   // Retona um copia

@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:math';
 
 // Tipos
 import './cart.dart';
+
+// Rotas
+import '../utils/constants.dart';
 
 class Order {
   final String id;
@@ -23,7 +25,8 @@ class Order {
 
 class Orders with ChangeNotifier {
   final String _urlOrders =
-      'https://flutter-myshop-cod3r.firebaseio.com/orders';
+      '${Constants.BASE_API_URL}/orders';
+      
   List<Order> _items = [];
 
   List<Order> get items {
@@ -34,6 +37,37 @@ class Orders with ChangeNotifier {
     return _items.length;
   }
 
+  Future<void> loadOrders() async {
+    List<Order> loadedItems = [];
+    final response = await http.get("$_urlOrders.json");
+    Map<String, dynamic> data = json.decode(response.body);
+
+    if (data != null) {
+      data.forEach((orderId, orderData) {
+        loadedItems.add(
+          Order(
+            id: orderId,
+            total: orderData['total'],
+            date: DateTime.parse(orderData['date']),
+            products: (orderData['products'] as List<dynamic>).map((item) {
+              return CartItem(
+                id: item['id'],
+                productId: item['productId'],
+                title: item['title'],
+                quantity: item['quantity'],
+                price: item['price'],
+              );
+            }).toList(),
+          ),
+        );
+      });
+      notifyListeners();
+    }
+
+    _items = loadedItems.reversed.toList();
+    return Future.value();
+  }
+
   Future<void> addOrder(Cart cart) async {
     final date = DateTime.now();
 
@@ -42,13 +76,15 @@ class Orders with ChangeNotifier {
       body: json.encode({
         'total': cart.totalAmount,
         'date': date.toIso8601String(),
-        'products': cart.items.values.map((cartItem) => {
-          'id': cartItem.id,
-          'productId': cartItem.productId,
-          'title': cartItem.title,
-          'quantity': cartItem.quantity,
-          'price': cartItem.price
-        }).toList()
+        'products': cart.items.values
+            .map((cartItem) => {
+                  'id': cartItem.id,
+                  'productId': cartItem.productId,
+                  'title': cartItem.title,
+                  'quantity': cartItem.quantity,
+                  'price': cartItem.price
+                })
+            .toList()
       }),
     );
 

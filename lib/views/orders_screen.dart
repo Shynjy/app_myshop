@@ -21,8 +21,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Orders orders = Provider.of(context);
-
     return WillPopScope(
       onWillPop: () async {
         if (_key.currentState.isDrawerOpen) {
@@ -38,11 +36,31 @@ class _OrdersScreenState extends State<OrdersScreen> {
           title: Text('Meus Pedidos'),
         ),
         drawer: AppDrawer(),
-        body: ListView.builder(
-          itemCount: orders.itemsCount,
-          itemBuilder: (ctx, index) => OrderWidget(orders.items[index]),
-          ),
+        body: FutureBuilder(
+          future: Provider.of<Orders>(context, listen: false).loadOrders(),
+          builder: (ctx, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.error != null ){
+              return Center(
+                child: Text('Ocorreu um erro!'),
+              );
+            } else {
+              return Consumer<Orders>(
+                builder: (ctx, orders, child) {
+                  return ListView.builder(
+                    itemCount: orders.itemsCount,
+                    itemBuilder: (ctx, index) =>
+                        OrderWidget(orders.items[index]),
+                  );
+                },
+              );
+            }
+          },
         ),
-      );
+      ),
+    );
   }
 }
