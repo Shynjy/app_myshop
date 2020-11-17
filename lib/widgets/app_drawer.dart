@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // Rotas
 import '../utils/app_routes.dart';
+
+// Providers
+import '../providers/auth.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -26,9 +30,10 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.shop),
             title: Text('Loja'),
             onTap: () {
-              isSettingPage == AppRoutes.HOME
+              isSettingPage == AppRoutes.AUTH_HOME
                   ? Navigator.of(context).pop()
-                  : Navigator.of(context).pushReplacementNamed(AppRoutes.HOME);
+                  : Navigator.of(context)
+                      .pushReplacementNamed(AppRoutes.AUTH_HOME);
             },
           ),
           Divider(),
@@ -38,7 +43,8 @@ class AppDrawer extends StatelessWidget {
             onTap: () {
               isSettingPage == AppRoutes.ORDERS
                   ? Navigator.of(context).pop()
-                  : Navigator.of(context).pushReplacementNamed(AppRoutes.ORDERS);
+                  : Navigator.of(context)
+                      .pushReplacementNamed(AppRoutes.ORDERS);
             },
           ),
           Divider(),
@@ -48,7 +54,17 @@ class AppDrawer extends StatelessWidget {
             onTap: () {
               isSettingPage == AppRoutes.PRODUCTS
                   ? Navigator.of(context).pop()
-                  : Navigator.of(context).pushReplacementNamed(AppRoutes.PRODUCTS);
+                  : Navigator.of(context)
+                      .pushReplacementNamed(AppRoutes.PRODUCTS);
+            },
+          ),
+          Spacer(),
+          ListTile(
+            leading: Icon(Icons.exit_to_app),
+            title: Text('Sair'),
+            onTap: () {
+              Provider.of<Auth>(context, listen: false).logout();
+              Navigator.of(context).pop();
             },
           ),
         ],

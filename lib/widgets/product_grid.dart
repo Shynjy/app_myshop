@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// Tipos
-// import '../providers/product.dart';
-
 // Widgets
 import '../widgets/product_grid_item.dart';
 

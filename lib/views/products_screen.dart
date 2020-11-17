@@ -33,7 +33,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
           Navigator.of(context).pop();
           return false;
         }
-        Navigator.of(context).pushReplacementNamed(AppRoutes.HOME);
+        Navigator.of(context).pushReplacementNamed(AppRoutes.AUTH_HOME);
         return true;
       },
       child: Scaffold(

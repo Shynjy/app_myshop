@@ -1,3 +1,4 @@
+import 'package:app_myshop/exceptions/auth_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,6 +28,27 @@ class _AuthCardState extends State<AuthCard> {
     'password': '',
   };
 
+  // Chama a caixa de erro
+  void _showErrorDialog(String msg) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          title: Text('Ocorreu um erro!'),
+          content: Text(msg),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('FECHAR'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
   void _swichObscure() {
     setState(() {
       _isObscure = !_isObscure;
@@ -46,18 +68,24 @@ class _AuthCardState extends State<AuthCard> {
 
     Auth auth = Provider.of<Auth>(context, listen: false);
 
-    if (_authMode == AuthMode.Login) {
-      // login
-      await auth.login(
-        _authData['email'],
-        _authData['password'],
-      );
-    } else {
-      // Registrar
-      await auth.signup(
-        _authData['email'],
-        _authData['password'],
-      );
+    try {
+      if (_authMode == AuthMode.Login) {
+        // login
+        await auth.login(
+          _authData['email'],
+          _authData['password'],
+        );
+      } else {
+        // Registrar
+        await auth.signup(
+          _authData['email'],
+          _authData['password'],
+        );
+      }
+    } on AuthException catch (error) {
+      _showErrorDialog(error.toString());
+    } catch (error) {
+      _showErrorDialog('Ocorreu um erro inesperado!');
     }
 
     setState(() {

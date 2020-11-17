@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 // Pages
-import './views/auth_screen.dart';
-import './views/products_overview_screen.dart';
 import './views/product_detail_screen.dart';
 import './views/cart_screen.dart';
 import './views/orders_screen.dart';
 import './views/products_screen.dart';
 import './views/product_form_screen.dart';
+
+import './views/auth_home_screen.dart';
 
 // Rotas
 import './utils/app_routes.dart';
@@ -24,12 +24,27 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider( //Quando utilizar mais de um provider
+    return MultiProvider(
+      //Quando utilizar mais de um provider
       providers: [
-        ChangeNotifierProvider(create: (_) => Products()), 
-        ChangeNotifierProvider(create: (_) => Cart()),
-        ChangeNotifierProvider(create: (_) => Orders()),
         ChangeNotifierProvider(create: (_) => Auth()),
+        ChangeNotifierProxyProvider<Auth, Products>(
+          create: (_) => Products(),
+          update: (ctx, auth, previousProducts) => Products(
+            auth.token,
+            auth.userId,
+            previousProducts.items,
+          ),
+        ),
+        ChangeNotifierProvider(create: (_) => Cart()),
+        ChangeNotifierProxyProvider<Auth, Orders>(
+          create: (_) => Orders(),
+          update: (ctx, auth, previousOrders) => Orders(
+            auth.token,
+            auth.userId,
+            previousOrders.items,
+          ),
+        ),
       ],
       child: MaterialApp(
         title: 'Minha Loja',
@@ -40,10 +55,9 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Lato',
         ),
         // home: ProductsOverviewScreen(),
-        initialRoute: AppRoutes.AUTH,
+        initialRoute: AppRoutes.AUTH_HOME,
         routes: {
-          AppRoutes.AUTH: (ctx) => AuthScreen(),
-          AppRoutes.HOME: (ctx) => ProductsOverviewScreen(),
+          AppRoutes.AUTH_HOME: (ctx) => AuthOrHomeScreen(),
           AppRoutes.PRODUCT_DETAIL: (ctx) => ProductDetailScreen(),
           AppRoutes.CART: (ctx) => CartScreen(),
           AppRoutes.ORDERS: (ctx) => OrdersScreen(),
@@ -51,10 +65,10 @@ class MyApp extends StatelessWidget {
           AppRoutes.PRODUCT_FORM: (ctx) => ProductFormScreen(),
         },
         onUnknownRoute: (settings) {
-        return MaterialPageRoute(builder: (_) {
-          return ProductsOverviewScreen();
-        });
-      },
+          return MaterialPageRoute(builder: (_) {
+            return AuthOrHomeScreen();
+          });
+        },
       ),
     );
   }

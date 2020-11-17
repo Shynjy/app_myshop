@@ -27,7 +27,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
           Navigator.of(context).pop();
           return false;
         }
-        Navigator.of(context).pushReplacementNamed(AppRoutes.HOME);
+        Navigator.of(context).pushReplacementNamed(AppRoutes.AUTH_HOME);
         return true;
       },
       child: Scaffold(
@@ -49,7 +49,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
               );
             } else {
               return Consumer<Orders>(
-                builder: (ctx, orders, child) {
+                builder: (ctx, orders, _) {
                   return ListView.builder(
                     itemCount: orders.itemsCount,
                     itemBuilder: (ctx, index) =>

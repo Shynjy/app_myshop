@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import '../utils/constants.dart';
 
 class Product with ChangeNotifier {
-  final String _urlProducts = '${Constants.BASE_API_URL}/products';
+  final String _urlProducts = '${Constants.BASE_API_URL}/userFavorites';
 
   final String id;
   final String title;
@@ -31,15 +31,13 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleFavorite() async {
+  Future<void> toggleFavorite(String token, String userId) async {
     _toggleFavorite();
 
     try {
-      final response = await http.patch(
-        "$_urlProducts/$id.json",
-        body: json.encode({
-          'isFavorite': isFavorite,
-        }),
+      final response = await http.put(
+        "$_urlProducts/$userId/$id.json?auth=$token",
+        body: json.encode(isFavorite),
       );
 
       if (response.statusCode >= 400) {
