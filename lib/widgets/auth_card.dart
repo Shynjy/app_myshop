@@ -12,7 +12,8 @@ class AuthCard extends StatefulWidget {
   _AuthCardState createState() => _AuthCardState();
 }
 
-class _AuthCardState extends State<AuthCard> {
+class _AuthCardState extends State<AuthCard>
+    with SingleTickerProviderStateMixin {
   GlobalKey<FormState> _form = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
   final _passwordController = TextEditingController();
@@ -23,7 +24,42 @@ class _AuthCardState extends State<AuthCard> {
   bool _isLoading = false;
   bool _isObscure = true;
 
-  Map<String, String> _authData = {
+  AnimationController _controllerAnimation;
+  Animation<double> _opacityAnimation;
+  Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controllerAnimation = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 300),
+    );
+
+    _opacityAnimation = Tween(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(
+      CurvedAnimation(
+        parent: _controllerAnimation,
+        curve: Curves.linear,
+      ),
+    );
+
+    // Animação de movimento
+    _slideAnimation = Tween<Offset>(
+      begin: Offset(0, -0.2),
+      end: Offset(0, 0),
+    ).animate(
+      CurvedAnimation(
+        parent: _controllerAnimation,
+        curve: Curves.linear,
+      ),
+    );
+  }
+
+  final Map<String, String> _authData = {
     'email': '',
     'password': '',
   };
@@ -98,10 +134,14 @@ class _AuthCardState extends State<AuthCard> {
       setState(() {
         _authMode = AuthMode.Signup;
       });
+      //Dispara o inicio da animação
+      _controllerAnimation.forward();
     } else {
       setState(() {
         _authMode = AuthMode.Login;
       });
+      //Retorna para o inicio da animação
+      _controllerAnimation.reverse();
     }
   }
 
@@ -110,6 +150,7 @@ class _AuthCardState extends State<AuthCard> {
     super.dispose();
     _pw.dispose();
     _pwConfir.dispose();
+    _controllerAnimation.dispose();
   }
 
   @override
@@ -119,9 +160,10 @@ class _AuthCardState extends State<AuthCard> {
     return Card(
       elevation: 8.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      child: Container(
-        // height: _authMode == AuthMode.Login ? 310 : 370,
-        height: 375,
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        curve: Curves.linear,
+        height: _authMode == AuthMode.Login ? 300 : 380,
         width: deviceZise.width * 0.75,
         padding: EdgeInsets.all(16.0),
         child: Form(
@@ -175,34 +217,46 @@ class _AuthCardState extends State<AuthCard> {
                 },
                 onSaved: (value) => _authData['password'] = value,
               ),
-              // CONFIRMACAO SENHA
-              if (_authMode == AuthMode.Signup)
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Confirmar Senha',
-                    suffixIcon: IconButton(
-                        icon: _isObscure
-                            ? Icon(Icons.visibility_off)
-                            : Icon(Icons.visibility),
-                        onPressed: _swichObscure),
-                  ),
-                  obscureText: _isObscure,
-                  keyboardType: TextInputType.emailAddress,
-                  focusNode: _pwConfir,
-                  onFieldSubmitted: (_) {
-                    _submit();
-                  },
-                  validator: _authMode == AuthMode.Signup
-                      ? (value) {
-                          if (value != _passwordController.text) {
-                            return 'Senhas são diferentes!';
-                          } else if (value == '') {
-                            return 'Repetir a Senha!';
-                          }
-                          return null;
-                        }
-                      : null,
+              AnimatedContainer(
+                constraints: BoxConstraints(
+                  minHeight: _authMode == AuthMode.Signup ? 60 : 0,
+                  maxHeight: _authMode == AuthMode.Signup ? 120 : 0,
                 ),
+                duration: Duration(milliseconds: 300),
+                curve: Curves.linear,
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: FadeTransition(
+                    opacity: _opacityAnimation,
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Confirmar Senha',
+                        suffixIcon: IconButton(
+                            icon: _isObscure
+                                ? Icon(Icons.visibility_off)
+                                : Icon(Icons.visibility),
+                            onPressed: _swichObscure),
+                      ),
+                      obscureText: _isObscure,
+                      keyboardType: TextInputType.emailAddress,
+                      focusNode: _pwConfir,
+                      onFieldSubmitted: (_) {
+                        _submit();
+                      },
+                      validator: _authMode == AuthMode.Signup
+                          ? (value) {
+                              if (value != _passwordController.text) {
+                                return 'Senhas são diferentes!';
+                              } else if (value == '') {
+                                return 'Repetir a Senha!';
+                              }
+                              return null;
+                            }
+                          : null,
+                    ),
+                  ),
+                ),
+              ),
               Spacer(),
               _isLoading
                   ? CircularProgressIndicator()

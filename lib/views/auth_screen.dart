@@ -20,27 +20,28 @@ class AuthScreen extends StatelessWidget {
                       end: Alignment.bottomCenter,
                     ),
                   ),
-        child: SingleChildScrollView(
-          child: Stack(
-            children: <Widget>[
-              Container(
-                width: double.infinity,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-                    Container(
-                      margin: EdgeInsets.only(bottom: 20),
-                      height: 150,
-                      width: 150,
-                      child: Image.asset('assets/images/logoMyshop-white.png'),
-                    ),
-                    AuthCard(),
-                  ],
+        child: Center(
+          child: SingleChildScrollView(
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  width: double.infinity,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(bottom: 20),
+                        height: 150,
+                        width: 150,
+                        child: Image.asset('assets/images/logoMyshop-white.png'),
+                      ),
+                      AuthCard(),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
