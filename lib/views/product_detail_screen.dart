@@ -10,20 +10,43 @@ class ProductDetailScreen extends StatelessWidget {
         ModalRoute.of(context).settings.arguments as Product;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(product.title),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: 300,
-              width: double.infinity,
-              child: Image.network(
-                product.imageUrl,
-                fit: BoxFit.cover,
+      // appBar: AppBar(
+      //   title: Text(product.title),
+      // ),
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            expandedHeight: 300,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(product.title),
+              centerTitle: true,
+              background: Stack(
+                fit: StackFit.expand,
+                children: <Widget>[
+                  Hero(
+                    tag: product.id,
+                    child: Image.network(
+                      product.imageUrl,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  DecoratedBox(decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment(0, 0.8),
+                      end: Alignment(0, 0),
+                      colors: [
+                        Color.fromRGBO(0, 0, 0, 0.6),
+                        Color.fromRGBO(0, 0, 0, 0),
+                      ],
+                    ),
+                  ),)
+                ],
               ),
             ),
+          ),
+          SliverList(
+              delegate: SliverChildListDelegate([
             SizedBox(
               height: 10,
             ),
@@ -33,6 +56,7 @@ class ProductDetailScreen extends StatelessWidget {
                 color: Colors.grey,
                 fontSize: 20,
               ),
+              textAlign: TextAlign.center,
             ),
             SizedBox(
               height: 10,
@@ -45,8 +69,8 @@ class ProductDetailScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ),
-          ],
-        ),
+          ]))
+        ],
       ),
     );
   }
