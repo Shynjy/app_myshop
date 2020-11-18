@@ -1,18 +1,37 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 // Tipos
 import '../providers/product.dart';
 
-class ProductDetailScreen extends StatelessWidget {
+class ProductDetailScreen extends StatefulWidget {
+  @override
+  _ProductDetailScreenState createState() => _ProductDetailScreenState();
+}
+
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
+  bool _openPage = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    void changeOpenPage() {
+      setState(() {
+        _openPage = !_openPage;
+      });
+    }
+
+    Timer(Duration(milliseconds: 100), changeOpenPage);
+  }
+
   @override
   Widget build(BuildContext context) {
     final Product product =
         ModalRoute.of(context).settings.arguments as Product;
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(product.title),
-      // ),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
@@ -31,45 +50,54 @@ class ProductDetailScreen extends StatelessWidget {
                       fit: BoxFit.cover,
                     ),
                   ),
-                  DecoratedBox(decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment(0, 0.8),
-                      end: Alignment(0, 0),
-                      colors: [
-                        Color.fromRGBO(0, 0, 0, 0.6),
-                        Color.fromRGBO(0, 0, 0, 0),
-                      ],
+                  AnimatedOpacity(
+                    opacity: _openPage ? 1.0 : 0.0,
+                    duration: Duration(milliseconds: 500),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment(0, 0.8),
+                          end: Alignment(0, 0),
+                          colors: [
+                            Color.fromRGBO(0, 0, 0, 0.6),
+                            Color.fromRGBO(0, 0, 0, 0),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),)
+                  )
                 ],
               ),
             ),
           ),
           SliverList(
-              delegate: SliverChildListDelegate([
-            SizedBox(
-              height: 10,
+            delegate: SliverChildListDelegate(
+              [
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  'R\$ ${product.price}',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 20,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  width: double.infinity,
+                  child: Text(
+                    product.description,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
             ),
-            Text(
-              'R\$ ${product.price}',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 20,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              width: double.infinity,
-              child: Text(
-                product.description,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ]))
+          )
         ],
       ),
     );

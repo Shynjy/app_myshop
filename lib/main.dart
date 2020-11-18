@@ -12,6 +12,7 @@ import './views/auth_home_screen.dart';
 
 // Rotas
 import './utils/app_routes.dart';
+import './utils/custom_routes.dart';
 
 // Dados
 import './providers/products.dart';
@@ -50,10 +51,14 @@ class MyApp extends StatelessWidget {
         title: 'Minha Loja',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primarySwatch: Colors.purple,
-          accentColor: Colors.deepOrange,
-          fontFamily: 'Lato',
-        ),
+            primarySwatch: Colors.purple,
+            accentColor: Colors.deepOrange,
+            fontFamily: 'Lato',
+            // Altera o modo de transição de página
+            pageTransitionsTheme: PageTransitionsTheme(builders: {
+              TargetPlatform.android: CustomPageTransitionsBuilder(),
+              TargetPlatform.iOS: CustomPageTransitionsBuilder(),
+            })),
         // home: ProductsOverviewScreen(),
         initialRoute: AppRoutes.AUTH_HOME,
         routes: {
