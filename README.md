@@ -1,4 +1,4 @@
-# Projeto em andamento / ongoing project
+![Screenshot do app](assets/images/telas_app_myshop.jpg)
 
 # 📱 app_myshop
 
