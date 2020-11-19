@@ -7,6 +7,9 @@ import 'package:http/http.dart' as http;
 
 import '../exceptions/auth_exception.dart';
 
+// Security
+import '../security/key_firebase.dart';
+
 class Auth extends ChangeNotifier {
   String _userId;
   String _token;
@@ -37,7 +40,7 @@ class Auth extends ChangeNotifier {
   Future<void> _authenticate(
       String email, String password, String urlSegment) async {
     final url =
-        'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=AIzaSyBGf6EwiwD580GNDaJ7LtiDsi2qnaMq1PU';
+        'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=${KeyFirebase.KeyAPIWeb}';
 
     final response = await http.post(
       url,
