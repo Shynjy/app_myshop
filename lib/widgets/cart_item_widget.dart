@@ -16,8 +16,9 @@ class CartItemWidget extends StatelessWidget {
       background: Container(
         decoration: ShapeDecoration(
           color: Theme.of(context).errorColor,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+          ),
         ),
         child: Icon(
           Icons.delete,
@@ -26,12 +27,10 @@ class CartItemWidget extends StatelessWidget {
         ),
         alignment: Alignment.centerRight,
         padding: EdgeInsets.only(right: 20),
-        margin: EdgeInsets.symmetric(
-          vertical: 4,
-        ),
+        margin: EdgeInsets.symmetric(vertical: 4),
       ),
-      direction:
-          DismissDirection.endToStart, // Torna o dismissble apenas para um lado
+      // Torna o dismissible apenas para um lado
+      direction: DismissDirection.endToStart,
       confirmDismiss: (_) {
         return showDialog(
           context: context,
